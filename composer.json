@@ -1,0 +1,30 @@
+{
+    "name": "dansrocks/ruler",
+    "description": "A simple stateless agnostic rules engine for PHP 7.2+",
+    "keywords": ["rules", "engine", "agnostic PHP"],
+    "homepage": "https://github.com/dansrocks/ruler",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Daniel Cabrera",
+            "email": "daniel.cabrera@summais.com",
+            "homepage": "http://github.com/dansrocks/"
+        }
+    ],
+    "require": {
+        "php": ">=7.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ruler\\": "src/Ruler"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ruler\\Test\\": "tests/Ruler/Test"
+        }
+    }
+}
