@@ -65,4 +65,59 @@ class ContextTest extends TestCase
 
         $this->assertFalse(isset($context['phone']));
     }
+
+    public function testOffsetGetTest()
+    {
+        $address = 'Gran Vía 18';
+        $city = 'Madrid';
+        $country = 'Spain';
+
+        $context = new Context([
+            'address' => $address,
+            'city' => $city,
+            'country' => $country,
+        ]);
+
+        $this->assertEquals($address, $context['address']);
+        $this->assertEquals($city, $context['city']);
+        $this->assertEquals($country, $context['country']);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $context['unknown_key'];
+    }
+
+    public function testOffsetUnsetTest()
+    {
+        $context = new Context([
+            'address' => 'Gran Vía 18',
+            'city' => 'Madrid',
+            'country' => 'Spain',
+        ]);
+
+        $this->assertTrue(isset($context['address']));
+        $this->assertTrue(isset($context['city']));
+        $this->assertTrue(isset($context['country']));
+
+        unset($context['address']);
+
+        $this->assertFalse(isset($context['address']));
+        $this->assertTrue(isset($context['city']));
+        $this->assertTrue(isset($context['country']));
+
+        unset($context['city']);
+
+        $this->assertFalse(isset($context['address']));
+        $this->assertFalse(isset($context['city']));
+        $this->assertTrue(isset($context['country']));
+
+        unset($context['country']);
+
+        $this->assertFalse(isset($context['address']));
+        $this->assertFalse(isset($context['city']));
+        $this->assertFalse(isset($context['country']));
+
+
+        $this->expectException(\InvalidArgumentException::class);
+        $context['unknown_key'];
+    }
 }

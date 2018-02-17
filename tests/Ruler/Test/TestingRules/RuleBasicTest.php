@@ -61,17 +61,43 @@ class RuleBasicTest extends TestCase
      */
     public function testEvaluateContextRequiredForRuleReturnsValue()
     {
-        $context = new Context([
+        $context1 = new Context([
+            'value' => 15,
+        ]);
+
+        try {
+            $rule1 = new SimpleRule();
+            $this->assertEquals(15, $rule1->evaluate($context1), "Evaluate Simple Rule Failed");
+
+        } catch (MissingContextException $e) {
+            $this->fail('Evaluate Simple Rule Failed with bad Missing Context Exception');
+        }
+
+        // -------------
+
+        $context2 = new Context([
             'value1' => 10,
             'value2' => 20,
         ]);
 
         try {
-            $rule = new AddTwoValuesRule();
-            $this->assertEquals(30, $rule->evaluate($context), "Evaluate Simple Rule Failed");
+            $rule2 = new AddTwoValuesRule();
+            $this->assertEquals(30, $rule2->evaluate($context2), "Evaluate AddTwoValues Rule Failed");
 
         } catch (MissingContextException $e) {
-            $this->fail('Evaluate Simple Rule Failed with bad Missing Context Exception');
+            $this->fail('Evaluate AddTwoValues Rule Failed with bad Missing Context Exception');
+        }
+
+        // -------------
+
+        $context3 = new Context();
+
+        try {
+            $rule3 = new RuleWithEmptyName();
+            $this->assertEquals(1, $rule3->evaluate($context3), "Evaluate RuleWithEmptyName Failed");
+
+        } catch (MissingContextException $e) {
+            $this->fail('Evaluate RuleWithEmptyName Failed with bad Missing Context Exception');
         }
     }
 

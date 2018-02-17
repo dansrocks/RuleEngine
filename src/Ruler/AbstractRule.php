@@ -5,7 +5,7 @@ namespace Ruler;
 use Ruler\Exceptions\MissingContextException;
 
 /**
- * Class AbstractRuler
+ * Class AbstractRule
  *
  * @package Ruler
  */
