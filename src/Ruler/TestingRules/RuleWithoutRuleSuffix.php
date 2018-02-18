@@ -6,17 +6,17 @@ use Ruler\AbstractRule;
 use Ruler\Context;
 
 /**
- * Class RuleWithEmptyName
+ * Class RuleWithoutRuleSuffix
  *
  * @package Ruler\Rules
  */
-class RuleWithEmptyName extends AbstractRule
+class RuleWithoutRuleSuffix extends AbstractRule
 {
     /**
      * @inheritdoc
      */
     protected function run(Context $context) : int
     {
-        return 1;
+        return 25;
     }
 }

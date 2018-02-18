@@ -12,12 +12,10 @@ use Ruler\Context;
  */
 class SimpleRule extends AbstractRule
 {
-    protected $ruleName = "SimpleRule";
-
-    protected $parameters = [
-        'P1' => 'P1.value',
-        'P2' => 'P2.value',
-        'P3' => 'P3.value',
+    protected $parameterKeys = [
+        'P1',
+        'P2',
+        'P3',
     ];
 
     protected $contextRequired = [

@@ -12,6 +12,9 @@ use Ruler\Context;
  */
 class ContextTest extends TestCase
 {
+    /**
+     *
+     */
     public function testConstruct()
     {
         $data = array(

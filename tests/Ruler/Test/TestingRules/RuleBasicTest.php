@@ -5,9 +5,11 @@ namespace Ruler\Test\TestingRules;
 use PHPUnit\Framework\TestCase;
 use Ruler\Context;
 use Ruler\Exceptions\MissingContextException;
+use Ruler\Exceptions\MissingParametersException;
 use Ruler\Exceptions\UndefinedRuleParameterException;
 use Ruler\TestingRules\AddTwoValuesRule;
-use Ruler\TestingRules\RuleWithEmptyName;
+use Ruler\TestingRules\NewSimpleRule;
+use Ruler\TestingRules\RuleWithoutRuleSuffix;
 use Ruler\TestingRules\SimpleRule;
 
 /**
@@ -17,24 +19,38 @@ use Ruler\TestingRules\SimpleRule;
  */
 class RuleBasicTest extends TestCase
 {
-    /**
-     * Check that rule has a name
-     */
-    public function testRuleName()
+
+//    public function setUp()
+//    {
+//        $this->markTestSkipped();
+//        parent::setUp();
+//    }
+
+
+    public function testCreateRuleWhitoutAllParamsThrowException()
     {
-        $rule = new SimpleRule();
-        $this->assertEquals('SimpleRule', $rule->getRuleName());
+        $this->expectException(MissingParametersException::class);
+        try {
+            $params = [];
+            $rule = new SimpleRule($params);
+        } catch (MissingParametersException $e) {
+            $expectedMessage = "Missing parameters (P1, P2, P3)";
+            $this->assertEquals($expectedMessage, $e->getMessage());
+            throw $e;
+        }
     }
 
-    /**
-     * Check that rule returns an Exception when its name is empty
-     */
-    public function testRuleWithoutName()
+    public function testCreateRuleWhitoutSomeParamsThrowException()
     {
-        $this->expectException(\RuntimeException::class);
-
-        $rule = new RuleWithEmptyName();
-        $rule->getRuleName();
+        $this->expectException(MissingParametersException::class);
+        try {
+            $params = [ 'P2' => 20 ];
+            $rule = new SimpleRule($params);
+        } catch (MissingParametersException $e) {
+            $expectedMessage = "Missing parameters (P1, P3)";
+            $this->assertEquals($expectedMessage, $e->getMessage());
+            throw $e;
+        }
     }
 
     /**
@@ -42,19 +58,26 @@ class RuleBasicTest extends TestCase
      */
     public function testGetContextRequiredForRule()
     {
-        $context1 = [
-            'value',
-        ];
-        $rule1 = new SimpleRule();
-        $this->assertEquals($context1, $rule1->getContextRequired(), "Missing context for SimpleRule");
+        $params1 = [ 'P1' => 10, 'P2' => 20, 'P3' => 30 ];
+        $context1 = [ 'value' ];
+        $rule1 = new SimpleRule($params1);
+        $this->assertEquals($context1, $rule1->getContextRequired(), "Unexpected context for SimpleRule");
 
+        $context2 = [];
+        $rule2 = new NewSimpleRule();
+        $this->assertEquals($context2, $rule2->getContextRequired(), "Unexpected context for NewSimpleRule");
 
-        $context2 = [
+        $context3 = [
             'value1',
             'value2',
         ];
-        $rule2 = new AddTwoValuesRule();
-        $this->assertEquals($context2, $rule2->getContextRequired(), 'Missing context for AddTwoValuesRule');
+        $rule3 = new AddTwoValuesRule();
+        $this->assertEquals($context3, $rule3->getContextRequired(), 'Unexpected context for AddTwoValuesRule');
+
+        $context4 = [
+        ];
+        $rule4 = new RuleWithoutRuleSuffix();
+        $this->assertEquals($context4, $rule4->getContextRequired(), 'Unexpected context for RuleWithoutRuleSuffix');
     }
 
     /**
@@ -62,12 +85,10 @@ class RuleBasicTest extends TestCase
      */
     public function testEvaluateContextRequiredForRuleReturnsValue()
     {
-        $context1 = new Context([
-            'value' => 15,
-        ]);
-
         try {
-            $rule1 = new SimpleRule();
+            $params1 = [ 'P1' => 10, 'P2' => 20, 'P3' => 30 ];
+            $context1 = new Context([ 'value' => 15 ]);
+            $rule1 = new SimpleRule($params1);
             $this->assertEquals(15, $rule1->evaluate($context1), "Evaluate Simple Rule Failed");
 
         } catch (MissingContextException $e) {
@@ -77,28 +98,35 @@ class RuleBasicTest extends TestCase
         // -------------
 
         $context2 = new Context([
-            'value1' => 10,
+            'value1' => 15,
             'value2' => 20,
         ]);
 
         try {
             $rule2 = new AddTwoValuesRule();
-            $this->assertEquals(30, $rule2->evaluate($context2), "Evaluate AddTwoValues Rule Failed");
+            $this->assertEquals(35, $rule2->evaluate($context2), "Evaluate AddTwoValues Rule Failed");
 
         } catch (MissingContextException $e) {
             $this->fail('Evaluate AddTwoValues Rule Failed with bad Missing Context Exception');
         }
 
         // -------------
-
-        $context3 = new Context();
-
         try {
-            $rule3 = new RuleWithEmptyName();
-            $this->assertEquals(1, $rule3->evaluate($context3), "Evaluate RuleWithEmptyName Failed");
+            $rule3 = new NewSimpleRule();
+            $this->assertEquals(1, $rule3->evaluate(new Context()), "Evaluate NewSimpleRule Failed");
 
         } catch (MissingContextException $e) {
-            $this->fail('Evaluate RuleWithEmptyName Failed with bad Missing Context Exception');
+            $this->fail('Evaluate NewSimpleRule Failed with bad Missing Context Exception');
+        }
+
+        // -------------
+
+        try {
+            $rule4 = new RuleWithoutRuleSuffix();
+            $this->assertEquals(25, $rule4->evaluate(new Context()), "Evaluate RuleWithoutRuleSuffix Failed");
+
+        } catch (MissingContextException $e) {
+            $this->fail('Evaluate RuleWithoutRuleSuffix Failed with bad Missing Context Exception');
         }
     }
 
@@ -115,6 +143,7 @@ class RuleBasicTest extends TestCase
         try {
             $rule = new AddTwoValuesRule();
             $rule->evaluate($context);
+
         } catch (MissingContextException $e) {
             $expectError = 'Missing context (value2)';
             $this->assertEquals($expectError, $e->getMessage());
@@ -122,29 +151,26 @@ class RuleBasicTest extends TestCase
         }
     }
 
-    public function testGetParametersReturnsRightParameters()
+    public function _testGetParametersReturnsRightParameters()
     {
-        $rule = new SimpleRule();
+        $params1 = [ 'P1' => 10, 'P2' => 20, 'P3' => 30 ];
+        $rule = new SimpleRule($params1);
 
         $expectedParams = [ 'P1', 'P2', 'P3' ];
         $this->assertEquals($expectedParams, $rule->getParametersRequired());
     }
 
-    public function testGetParameterReturnValues()
+    public function _testGetParameterReturnValues()
     {
-        $rule = new SimpleRule();
+        $params = [ 'P1' => 10, 'P2' => 20, 'P3' => 30 ];
+        $rule = new SimpleRule($params);
 
-        $expectedParams = [
-            'P1' => 'P1.value',
-            'P2' => 'P2.value',
-            'P3' => 'P3.value',
-        ];
-        foreach ($expectedParams as $paramKey => $value) {
+        foreach ($params as $paramKey => $value) {
             $this->assertEquals($value, $rule->getParameter($paramKey));
         }
     }
 
-    public function testGetParameterWhenParamsDoesntExistThrowException()
+    public function _testGetParameterWhenParamsDoesntExistThrowException()
     {
         $this->expectException(UndefinedRuleParameterException::class);
 
