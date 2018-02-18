@@ -12,8 +12,28 @@ class BaseException extends \Exception
     const CODE = 0;
     const MESSAGE = "Unnamed exception";
 
-    public function __construct()
+    /**
+     * BaseException constructor
+     * .
+     * @param string $text
+     */
+    public function __construct(string $text = '')
     {
-        parent::__construct(self::MESSAGE, self::CODE, null);
+        parent::__construct($this->generateErrorMessage($text), static::CODE, null);
+    }
+
+    /**
+     * @param string $text
+     *
+     * @return string
+     */
+    private function generateErrorMessage(string $text)
+    {
+        $message = static::MESSAGE;
+        if (! empty($text)) {
+            $message .= sprintf(" (%s)", $text);
+        }
+
+        return $message;
     }
 }
