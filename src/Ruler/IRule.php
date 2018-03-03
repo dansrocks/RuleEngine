@@ -17,6 +17,11 @@ interface IRule
     public function getRuleName() : string;
 
     /**
+     * @return bool
+     */
+    public function isEnabled() : bool;
+
+    /**
      * @return array
      */
     public function getParametersRequired() : array;

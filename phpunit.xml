@@ -10,6 +10,9 @@
     <filter>
         <whitelist>
             <directory suffix=".php">./src/Ruler/</directory>
+            <exclude>
+                <directory suffix=".php">./src/Ruler/TestingRules</directory>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>

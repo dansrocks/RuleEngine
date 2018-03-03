@@ -17,12 +17,15 @@ class RuleParametersTest extends TestCase
 
     public function testRequiredParametersMethod()
     {
-        $params = [
-            'P1' => 10,
-            'P2' => 20,
-            'P3' => 30,
+        $config = [
+            'enabled' => true,
+            'params' => [
+                'P1' => 10,
+                'P2' => 20,
+                'P3' => 30,
+            ],
         ];
-        $rule = new SimpleRule($params);
+        $rule = new SimpleRule($config);
 
         $expectedParams = [ 'P1', 'P2', 'P3' ];
         $this->assertEquals($expectedParams, $rule->getParametersRequired());
@@ -33,14 +36,53 @@ class RuleParametersTest extends TestCase
      */
     public function testCreateRuleSuccessful()
     {
-        $params = [
-            'P1' => 10,
-            'P2' => 20,
-            'P3' => 30,
+        $config = [
+            'enabled' => true,
+            'params' => [
+                'P1' => 10,
+                'P2' => 20,
+                'P3' => 30,
+            ],
         ];
 
-        $rule = new SimpleRule($params);
+        $rule = new SimpleRule($config);
         $this->assertInstanceOf(SimpleRule::class, $rule);
+    }
+
+    /**
+     * Check that rule has a name
+     */
+    public function testCreateEnabledRuleReturnsIsEnabled()
+    {
+        $config = [
+            'enabled' => true,
+            'params' => [
+                'P1' => 10,
+                'P2' => 20,
+                'P3' => 30,
+            ],
+        ];
+
+        $rule = new SimpleRule($config);
+        $this->assertTrue($rule->isEnabled());
+    }
+
+    /**
+     * Check that rule has a name
+     */
+    public function testCreateDisabledRuleReturnsIsNotEnabled()
+    {
+        $config = [
+            'enabled' => false,
+            'params' => [
+                'P1' => 10,
+                'P2' => 20,
+                'P3' => 30,
+            ],
+        ];
+
+        $rule = new SimpleRule($config);
+        $this->assertFalse($rule->isEnabled());
     }
 
     /**
@@ -51,11 +93,14 @@ class RuleParametersTest extends TestCase
         $this->expectException(MissingParametersException::class);
 
         try {
-            $params = [
-                'P1' => 10,
-                'P3' => 30,
+            $config = [
+                'enabled' => true,
+                'params' => [
+                    'P1' => 10,
+                    'P3' => 30,
+                ],
             ];
-            $rule = new SimpleRule($params);
+            $rule = new SimpleRule($config);
 
         } catch (MissingParametersException $e) {
             $expectedMessage = "Missing parameters (P2)";
@@ -69,14 +114,17 @@ class RuleParametersTest extends TestCase
      */
     public function testCheckParamsValues()
     {
-        $params = [
-            'P1' => 10,
-            'P2' => 20,
-            'P3' => 30,
+        $config = [
+            'enabled' => true,
+            'params' => [
+                'P1' => 10,
+                'P2' => 20,
+                'P3' => 30,
+            ],
         ];
 
-        $rule = new SimpleRule($params);
-        foreach ($params as $paramKey => $paramValue) {
+        $rule = new SimpleRule($config);
+        foreach ($config['params'] as $paramKey => $paramValue) {
             $this->assertEquals($paramValue, $rule->getParameter($paramKey));
         }
     }
@@ -89,13 +137,16 @@ class RuleParametersTest extends TestCase
         $this->expectException(UndefinedRuleParameterException::class);
 
         try {
-            $params = [
-                'P1' => 10,
-                'P2' => 20,
-                'P3' => 30,
-                'P4' => 40,  // <- this param is not required. Will not assigned to Rule
+            $config = [
+                'enabled' => true,
+                'params' => [
+                    'P1' => 10,
+                    'P2' => 20,
+                    'P3' => 30,
+                    'P4' => 40,  // <- this param is not required. Will not assigned to Rule
+                ]
             ];
-            $rule = new SimpleRule($params);
+            $rule = new SimpleRule($config);
             $rule->getParameter('P4');
 
         } catch (UndefinedRuleParameterException $e) {
