@@ -2,12 +2,12 @@
 
 namespace Ruler;
 
+use Ruler\Exceptions\DisabledRuleCannotBeEvaluatedException;
 use Ruler\Exceptions\InvalidRuleConfigurationException;
 use Ruler\Exceptions\MissingContextException;
-use Ruler\Traits\RuleActivationTrait;
 use Ruler\Traits\RuleContextTrait;
 use Ruler\Traits\RuleNameTrait;
-use Ruler\Traits\RuleParametersTrait;
+use Ruler\Traits\RuleSetupTrait;
 
 /**
  * Class AbstractRule
@@ -16,49 +16,53 @@ use Ruler\Traits\RuleParametersTrait;
  */
 abstract class AbstractRule implements IRule
 {
-    use RuleActivationTrait, RuleNameTrait, RuleParametersTrait, RuleContextTrait;
+    use
+        RuleContextTrait,
+        RuleNameTrait,
+        RuleSetupTrait
+        ;
 
     /**
-     * Constructor.
+     * AbstractRule constructor.
      *
      * @param array $config
      *
      * @throws Exceptions\MissingParametersException
+     *
      * @throws InvalidRuleConfigurationException
      */
-    public function __construct(array $config)
+    public function __construct(array $config = [])
     {
-        $this->setupRuleName();
+        $this->assignRuleName($this->generateRuleNameFromClassName());
 
-        $this->ruleEnabled = array_key_exists('enabled', $config)
-            ? $config['enabled'] == true : false;
-
-        $params = array_key_exists('params', $config) ? $config['params'] : [];
-        if (! is_array($params)) {
-            throw new InvalidRuleConfigurationException();
+        if (! empty($config)) {
+            $this->setupRule($config);
         }
-
-        $this->setParameterKeys($params);
     }
 
     /**
      * @param Context $context
      *
-     * @return int
+     * @return IRuleValue
      *
+     * @throws DisabledRuleCannotBeEvaluatedException
      * @throws MissingContextException
      */
-    final public function evaluate(Context $context): int
+    final public function evaluate(Context $context): IRuleValue
     {
+        if (false === $this->isEnabled()) {
+            throw new DisabledRuleCannotBeEvaluatedException();
+        }
+
         $this->checkContext($context);
 
-        return $this->run($context);
+        return new RuleValue($this->run($context));
     }
 
     /**
      * @param Context $context
      *
-     * @return int
+     * @return mixed
      */
-    abstract protected function run(Context $context) : int;
+    abstract protected function run(Context $context);
 }

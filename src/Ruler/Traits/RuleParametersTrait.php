@@ -45,7 +45,7 @@ trait RuleParametersTrait
      *
      * @throws MissingParametersException
      */
-    protected function setParameterKeys(array $parameters)
+    protected function setParameters(array $parameters)
     {
         $parametersRequired = $this->getParametersRequired();
 
@@ -59,5 +59,15 @@ trait RuleParametersTrait
                 $this->parametersValues[$parameterName] = $parameters[$parameterName];
             }
         }
+    }
+
+    /**
+     * @param string $paramKey
+     *
+     * @return bool
+     */
+    protected function hasParameter(string $paramKey) : bool
+    {
+        return array_key_exists($paramKey, $this->parametersValues);
     }
 }
