@@ -3,15 +3,15 @@
 <phpunit bootstrap="./tests/bootstrap.php" colors="true">
     <testsuites>
         <testsuite name="Ruler Test Suite">
-            <directory suffix="Test.php">./tests/Ruler/Test/</directory>
+            <directory suffix="Test.php">./tests/Ruler/</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory suffix=".php">./src/Ruler/</directory>
+            <directory suffix=".php">./src/</directory>
             <exclude>
-                <directory suffix=".php">./src/Ruler/TestingRules</directory>
+                <directory suffix=".php">./src/TestingRules</directory>
             </exclude>
         </whitelist>
     </filter>
