@@ -34,7 +34,7 @@ use PHPUnit\Framework\TestCase;
  */
 class DummyTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         // $this->markTestSkipped();
         parent::setUp();
