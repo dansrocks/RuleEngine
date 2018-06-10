@@ -18,8 +18,8 @@ class ContextReKeyTest extends TestCase
         $data = [
             'name' => 'Dans Rocks',
             'position' => 'CTO',
-            'phone' => '911 012 340',
-            'address' => 'Caleruega 102',
+            'phone' => '+00 000 0000',
+            'address' => 'Unnamed street',
         ];
         $context = new Context($data);
         $this->assertEquals(array_keys($data), $context->keys());
