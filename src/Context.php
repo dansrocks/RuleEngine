@@ -2,6 +2,8 @@
 
 namespace Ruler;
 
+use Adbar\Dot;
+
 /**
  * Class Context
  *
@@ -9,8 +11,7 @@ namespace Ruler;
  */
 class Context implements \ArrayAccess
 {
-    private $keys   = [];
-    private $values = [];
+    protected $container;
 
     /**
      * Context constructor.
@@ -19,21 +20,19 @@ class Context implements \ArrayAccess
      */
     public function __construct(array $values = [])
     {
-        foreach ($values as $key => $value) {
-            $this->offsetSet($key, $value);
-        }
+        $this->container = new Dot($values);
     }
 
     /**
-     * Check if a keyname is defined into context.
+     * Check if a key is defined into context.
      *
-     * @param string $name
+     * @param string $key
      *
      * @return boolean
      */
-    public function offsetExists($name) : bool
+    public function offsetExists($key) : bool
     {
-        return isset($this->keys[$name]);
+        return $this->container->has($key);
     }
 
     /**
@@ -51,7 +50,7 @@ class Context implements \ArrayAccess
             throw new \InvalidArgumentException(sprintf('Key "%s" is not defined.', $key));
         }
 
-        return $this->values[$key];
+        return $this->container->get($key);
     }
 
     /**
@@ -63,8 +62,7 @@ class Context implements \ArrayAccess
      */
     public function offsetSet($key, $value)
     {
-        $this->keys[$key]   = true;
-        $this->values[$key] = $value;
+        $this->container->set($key, $value);
     }
 
     /**
@@ -74,9 +72,7 @@ class Context implements \ArrayAccess
      */
     public function offsetUnset($key)
     {
-        if ($this->offsetExists($key)) {
-            unset($this->keys[$key], $this->values[$key]);
-        }
+        $this->container->delete($key);
     }
 
     /**
@@ -84,9 +80,9 @@ class Context implements \ArrayAccess
      *
      * @return array An array of key
      */
-    public function keys()
+    public function keys() : array
     {
-        return array_keys($this->keys);
+        return array_keys($this->container->flatten());
     }
 
     /**
@@ -95,11 +91,7 @@ class Context implements \ArrayAccess
      */
     public function append(Context $context, bool $overwrite = false)
     {
-        foreach ($context->keys() as $key) {
-            if (! $this->offsetExists($key) || $overwrite) {
-                $this->offsetSet($key, $context->offsetGet($key));
-            }
-        }
+        $this->container->merge($context->container);
     }
 
     /**
@@ -107,11 +99,11 @@ class Context implements \ArrayAccess
      */
     public function rekey(string $prefix)
     {
-        foreach ($this->keys as $key => $value) {
+        foreach ($this->container->jsonSerialize()  as $key => $value) {
             $newKey = sprintf("%s%s", $prefix, $key);
-            $newValue = $this->offsetGet($key);
+            $value = $this->container->get($key);
             $this->offsetUnset($key);
-            $this->offsetSet($newKey, $newValue);
+            $this->offsetSet($newKey, $value);
         }
     }
 }
