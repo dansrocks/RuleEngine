@@ -47,7 +47,7 @@ class Context implements \ArrayAccess
      */
     public function offsetGet($key)
     {
-        if (!$this->offsetExists($key)) {
+        if (! $this->offsetExists($key)) {
             throw new \InvalidArgumentException(sprintf('Key "%s" is not defined.', $key));
         }
 
