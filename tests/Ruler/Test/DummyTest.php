@@ -32,7 +32,7 @@ use PHPUnit\Framework\TestCase;
  * @author Daniel Cabrera <drocks2000@gmail.com>
 
  */
-class ContextTest extends TestCase
+class DummyTest extends TestCase
 {
 
     public function testTrue()
