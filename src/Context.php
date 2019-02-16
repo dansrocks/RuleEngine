@@ -106,4 +106,28 @@ class Context implements \ArrayAccess
             $this->offsetSet($newKey, $value);
         }
     }
+
+    /**
+     * @return array
+     */
+    public function getAll() : array
+    {
+        return $this->container->all();
+    }
+
+    /**
+     * @return array
+     */
+    public function flatten() : array
+    {
+        return $this->container->flatten();
+    }
+
+    /**
+     * @return array
+     */
+    public function serialize() : array
+    {
+        return $this->container->jsonSerialize();
+    }
 }
