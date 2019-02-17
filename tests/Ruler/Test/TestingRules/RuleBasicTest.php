@@ -5,6 +5,7 @@ namespace Ruler\Test\TestingRules;
 use PHPUnit\Framework\TestCase;
 use Ruler\Context;
 use Ruler\Exceptions\MissingContextException;
+use Ruler\Exceptions\UndefinedRuleParameterException;
 use Ruler\TestingRules\AddTwoValuesRule;
 use Ruler\TestingRules\RuleWithEmptyName;
 use Ruler\TestingRules\SimpleRule;
@@ -110,8 +111,54 @@ class RuleBasicTest extends TestCase
             'value1' => 10,
         ]);
 
-        $rule = new AddTwoValuesRule();
         $this->expectException(MissingContextException::class);
-        $rule->evaluate($context);
+        try {
+            $rule = new AddTwoValuesRule();
+            $rule->evaluate($context);
+        } catch (MissingContextException $e) {
+            $expectError = 'Missing context (value2)';
+            $this->assertEquals($expectError, $e->getMessage());
+            throw  $e;
+        }
+    }
+
+    public function testGetParametersReturnsRightParameters()
+    {
+        $rule = new SimpleRule();
+
+        $expectedParams = [ 'P1', 'P2', 'P3' ];
+        $this->assertEquals($expectedParams, $rule->getParametersRequired());
+    }
+
+    public function testGetParameterReturnValues()
+    {
+        $rule = new SimpleRule();
+
+        $expectedParams = [
+            'P1' => 'P1.value',
+            'P2' => 'P2.value',
+            'P3' => 'P3.value',
+        ];
+        foreach ($expectedParams as $paramKey => $value) {
+            $this->assertEquals($value, $rule->getParameter($paramKey));
+        }
+    }
+
+    public function testGetParameterWhenParamsDoesntExistThrowException()
+    {
+        $this->expectException(UndefinedRuleParameterException::class);
+
+        try {
+            $rule = new SimpleRule();
+            $rule->getParameter("ParameterP4");
+
+        } catch (UndefinedRuleParameterException $e) {
+            $expectedError = "Undefined Parameter (ParameterP4)";
+            $this->assertEquals($expectedError, $e->getMessage());
+            throw $e;
+
+        } catch (\Exception $e) {
+            $this->assertFalse(true, "Unexpected Exception in Rule::getParameter()");
+        }
     }
 }
