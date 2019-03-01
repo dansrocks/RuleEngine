@@ -3,7 +3,7 @@
     "description": "A simple stateless agnostic rules engine for PHP 7.2+",
     "keywords": ["rules", "engine", "agnostic PHP"],
     "homepage": "https://github.com/dansrocks/ruler",
-    "license": "CC BY-NC-ND 4.0",
+    "license": "CC-BY-NC-ND-4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode",
     "authors": [
         {
