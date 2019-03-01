@@ -2,7 +2,9 @@
 
 namespace Ruler;
 
+use Ruler\Exceptions\InvalidRuleConfigurationException;
 use Ruler\Exceptions\MissingContextException;
+use Ruler\Traits\RuleActivationTrait;
 use Ruler\Traits\RuleContextTrait;
 use Ruler\Traits\RuleNameTrait;
 use Ruler\Traits\RuleParametersTrait;
@@ -14,19 +16,29 @@ use Ruler\Traits\RuleParametersTrait;
  */
 abstract class AbstractRule implements IRule
 {
-    use RuleNameTrait, RuleParametersTrait, RuleContextTrait;
+    use RuleActivationTrait, RuleNameTrait, RuleParametersTrait, RuleContextTrait;
 
     /**
      * Constructor.
      *
-     * @param array $parameters
+     * @param array $config
      *
      * @throws Exceptions\MissingParametersException
+     * @throws InvalidRuleConfigurationException
      */
-    public function __construct($parameters = [])
+    public function __construct(array $config)
     {
         $this->setupRuleName();
-        $this->setParameterKeys($parameters);
+
+        $this->ruleEnabled = array_key_exists('enabled', $config)
+            ? $config['enabled'] == true : false;
+
+        $params = array_key_exists('params', $config) ? $config['params'] : [];
+        if (! is_array($params)) {
+            throw new InvalidRuleConfigurationException();
+        }
+
+        $this->setParameterKeys($params);
     }
 
     /**
