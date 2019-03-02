@@ -43,7 +43,7 @@ interface IRule
     /**
      * @param Context $context
      *
-     * @return int
+     * @return IRuleValue
      */
-    public function evaluate(Context $context) : int;
+    public function evaluate(Context $context) : IRuleValue;
 }

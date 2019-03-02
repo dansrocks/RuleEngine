@@ -12,9 +12,8 @@ trait RuleNameTrait
     /** @var string|null  */
     private $ruleName = null;
 
-
-    /**
-     * @inheritdoc
+     /**
+     * @return string
      */
     public function getRuleName(): string
     {
@@ -22,26 +21,25 @@ trait RuleNameTrait
     }
 
     /**
-     *
+     * No doc
      */
-    private function setupRuleName()
+    private function assignRuleName(string $rulename)
     {
-        if ($this->ruleName === null) {
-            $className = $this->getShortClassName();
-            $this->ruleName = substr($className, -4) === 'Rule'
-                ? substr($className,0, strlen($className) - 4)
-                : $className;
-        }
+        $this->ruleName = $rulename;
     }
 
     /**
      * @return string
      */
-    private function getShortClassName()
+    private function generateRuleNameFromClassName()
     {
         $parts = explode('\\', get_class($this));
-        $shortClassName = array_pop($parts);
+        $className = array_pop($parts);
 
-        return $shortClassName;
+        $ruleName = substr($className, -4) === 'Rule'
+            ? substr($className,0, strlen($className) - 4)
+            : $className;
+
+        return $ruleName;
     }
 }

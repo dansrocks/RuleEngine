@@ -8,6 +8,7 @@ use Ruler\Exceptions\InvalidRuleConfigurationException;
 use Ruler\Exceptions\MissingContextException;
 use Ruler\Exceptions\MissingParametersException;
 use Ruler\Exceptions\UndefinedRuleParameterException;
+use Ruler\IRuleValue;
 use Ruler\TestingRules\AddTwoValuesRule;
 use Ruler\TestingRules\NewSimpleRule;
 use Ruler\TestingRules\RuleWithoutRuleSuffix;
@@ -187,7 +188,10 @@ class RuleBasicTest extends TestCase
         ]);
 
         $rule = new AddTwoValuesRule(['enabled' => true]);
-        $this->assertEquals(25, $rule->evaluate($context));
+        $result = $rule->evaluate($context);
+        $this->assertInstanceOf(IRuleValue::class, $result);
+        $this->assertEquals('integer', $result->getType());
+        $this->assertEquals(25, $result->getValue());
     }
 
     public function testGetParametersReturnsRightParameters()
