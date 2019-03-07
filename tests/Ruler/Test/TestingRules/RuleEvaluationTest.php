@@ -7,6 +7,7 @@ use Ruler\Context;
 use Ruler\Exceptions\DisabledRuleCannotBeEvaluatedException;
 use Ruler\IRuleValue;
 use Ruler\TestingRules\AddTwoValuesRule;
+use Ruler\TestingRules\OptionalContextRule;
 
 
 /**
@@ -49,5 +50,27 @@ class RuleEvaluationTest extends TestCase
         } catch (\Exception $e) {
             $this->fail("Unexpected exception");
         }
+    }
+
+    public function testEvaluateRuleWithOptionalContext()
+    {
+        $config = [
+            'enabled' => true,
+        ];
+
+        $rule = new OptionalContextRule($config);
+
+        $context_1 = new Context(['required_value_1' => 2, 'required_value_2' => 4]);
+        $this->assertEquals(6, $rule->evaluate($context_1)->getValue());
+
+        $context_2 = new Context(['required_value_1' => 2, 'required_value_2' => 4, 'optional_value_1' => 8]);
+        $this->assertEquals(14, $rule->evaluate($context_2)->getValue());
+
+        $context_3 = new Context(['required_value_1' => 2, 'required_value_2' => 4, 'optional_value_2' => 16]);
+        $this->assertEquals(22, $rule->evaluate($context_3)->getValue());
+
+        $context_4 = new Context(['required_value_1' => 2, 'required_value_2' => 4,
+            'optional_value_1' => 8, 'optional_value_2' => 16]);
+        $this->assertEquals(30, $rule->evaluate($context_4)->getValue());
     }
 }

@@ -11,6 +11,9 @@ use Ruler\Exceptions\UndefinedRuleParameterException;
  */
 interface IRule
 {
+    const CONTEXT_REQUIRED = 'required';
+    const CONTEXT_OPTIONAL = 'optional';
+
     /**
      * @return string
      */
@@ -36,9 +39,11 @@ interface IRule
     public function getParameter(string $paramKey);
 
     /**
+     * @param bool $includeOptional
+     *
      * @return array
      */
-    public function getContextRequired() : array;
+    public function getContextRequired(bool $includeOptional = true) : array;
 
     /**
      * @param Context $context

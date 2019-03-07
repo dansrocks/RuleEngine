@@ -4,6 +4,7 @@ namespace Ruler\TestingRules;
 
 use Ruler\AbstractRule;
 use Ruler\Context;
+use Ruler\IRule;
 
 /**
  * Class SimpleRule
@@ -19,7 +20,7 @@ class SimpleRule extends AbstractRule
     ];
 
     protected $contextRequired = [
-        'value',
+        'value' => IRule::CONTEXT_REQUIRED,
     ];
 
     /**
