@@ -4,6 +4,7 @@ namespace Ruler\TestingRules;
 
 use Ruler\AbstractRule;
 use Ruler\Context;
+use Ruler\IRule;
 
 /**
  * Class AddTwoValuesRule
@@ -15,8 +16,8 @@ class AddTwoValuesRule extends AbstractRule
     protected $ruleName = "AddTwoValuesRule";
 
     protected $contextRequired = [
-        'value1',
-        'value2',
+        'value1' => IRule::CONTEXT_REQUIRED,
+        'value2' => IRule::CONTEXT_REQUIRED,
     ];
 
     /**

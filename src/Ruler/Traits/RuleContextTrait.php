@@ -4,6 +4,7 @@ namespace Ruler\Traits;
 
 use Ruler\Context;
 use Ruler\Exceptions\MissingContextException;
+use Ruler\IRule;
 
 /**
  * Trait RuleContextTrait
@@ -18,9 +19,13 @@ trait RuleContextTrait
     /**
      * @inheritdoc
      */
-    public function getContextRequired(): array
+    public function getContextRequired($includeOptional = true): array
     {
-        return $this->contextRequired;
+        $context = (true === $includeOptional)
+            ? $this->contextRequired
+            : array_filter($this->contextRequired, function ($type) { return $type === IRule::CONTEXT_REQUIRED; });
+
+        return array_keys($context);
     }
 
     /**
@@ -30,7 +35,7 @@ trait RuleContextTrait
      */
     protected function checkContext(Context $context): void
     {
-        $missingContextKeys = array_diff_key($this->getContextRequired(), $context->keys());
+        $missingContextKeys = array_diff_key($this->getContextRequired(false), $context->keys());
         if (! empty($missingContextKeys)) {
             throw new MissingContextException(implode(',', $missingContextKeys));
         }
