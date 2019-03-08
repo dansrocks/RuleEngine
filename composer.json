@@ -5,6 +5,7 @@
     "homepage": "https://github.com/dansrocks/ruler",
     "license": "CC-BY-NC-ND-4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode",
+    "minimum-stability": "stable",
     "authors": [
         {
             "name": "Daniel Cabrera",
