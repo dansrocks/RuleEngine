@@ -39,7 +39,5 @@ class ContextReKeyTest extends TestCase
         }
 
         $this->assertEquals($newKeys, $context->keys());
-
-        print_r($context);
     }
 }
