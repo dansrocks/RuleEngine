@@ -95,9 +95,9 @@ class Context implements \ArrayAccess
      */
     public function append(Context $context, bool $overwrite = false)
     {
-        foreach ($context as $key => $value) {
+        foreach ($context->keys() as $key) {
             if (! $this->offsetExists($key) || $overwrite) {
-                $this->offsetSet($key, $value);
+                $this->offsetSet($key, $context->offsetGet($key));
             }
         }
     }
