@@ -23,8 +23,8 @@ class ContextAppendTest extends TestCase
         $this->assertEquals(array_keys($data), $context->keys());
 
         $data2 = [
-            'phone' => '911 012 340',
-            'address' => 'Caleruega 102',
+            'phone' => '+00 000 0000',
+            'address' => 'Unnamed street',
         ];
         $context2 = new Context($data2);
 
