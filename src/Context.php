@@ -88,4 +88,30 @@ class Context implements \ArrayAccess
     {
         return array_keys($this->keys);
     }
+
+    /**
+     * @param Context $context
+     * @param bool $overwrite
+     */
+    public function append(Context $context, bool $overwrite = false)
+    {
+        foreach ($context->keys() as $key) {
+            if (! $this->offsetExists($key) || $overwrite) {
+                $this->offsetSet($key, $context->offsetGet($key));
+            }
+        }
+    }
+
+    /**
+     * @param string $prefix
+     */
+    public function rekey(string $prefix)
+    {
+        foreach ($this->keys as $key => $value) {
+            $newKey = sprintf("%s%s", $prefix, $key);
+            $newValue = $this->offsetGet($key);
+            $this->offsetUnset($key);
+            $this->offsetSet($newKey, $newValue);
+        }
+    }
 }
