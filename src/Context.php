@@ -101,4 +101,17 @@ class Context implements \ArrayAccess
             }
         }
     }
+
+    /**
+     * @param string $prefix
+     */
+    public function rekey(string $prefix)
+    {
+        foreach ($this->keys as $key => $value) {
+            $newKey = sprintf("%s%s", $prefix, $key);
+            $newValue = $this->offsetGet($key);
+            $this->offsetUnset($key);
+            $this->offsetSet($newKey, $newValue);
+        }
+    }
 }
