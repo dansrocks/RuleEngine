@@ -43,6 +43,17 @@ abstract class AbstractRule implements IRule
     /**
      * @param Context $context
      *
+     * @return bool
+     */
+    public function isExcluded(Context $context) : bool
+    {
+        echo __METHOD__ . "\n";
+        return false;
+    }
+
+    /**
+     * @param Context $context
+     *
      * @return IRuleValue
      *
      * @throws DisabledRuleCannotBeEvaluatedException

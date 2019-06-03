@@ -48,6 +48,13 @@ interface IRule
     /**
      * @param Context $context
      *
+     * @return bool
+     */
+    public function isExcluded(Context $context) : bool;
+
+    /**
+     * @param Context $context
+     *
      * @return IRuleValue
      */
     public function evaluate(Context $context) : IRuleValue;
