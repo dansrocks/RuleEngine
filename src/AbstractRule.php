@@ -47,7 +47,6 @@ abstract class AbstractRule implements IRule
      */
     public function isExcluded(Context $context) : bool
     {
-        echo __METHOD__ . "\n";
         return false;
     }
 
